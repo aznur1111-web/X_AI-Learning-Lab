@@ -17,12 +17,27 @@ body[data-theme="light"]{color-scheme:light;--bg:#edf1f6;--panel:#fff;--panel2:#
 @media(max-width:1180px){.layout{grid-template-columns:225px minmax(0,1fr)}.inspector{position:static;grid-column:2;max-height:none;display:grid;grid-template-columns:1fr 1fr;gap:12px}.inspector-section{margin:0;padding:0;border:0}.brand{min-width:205px}.top-meta .top-chip:last-child{display:none}}
 @media(max-width:760px){.topbar{height:auto;min-height:58px;padding:9px 11px;gap:9px;flex-wrap:wrap}.brand{min-width:0;flex:1}.brand-mark{width:32px;height:32px}.brand small{font-size:8px}.top-meta{display:none}.top-actions{gap:5px}.top-actions .btn{padding:7px 8px}.layout{display:flex;flex-direction:column;padding:8px;gap:9px}.sidebar,.inspector,.main-content{width:100%;position:static;max-height:none}.sidebar{order:0;padding:10px}.sidebar.collapsed .nav-list{display:none}.mobile-menu{display:inline-flex}.main-content{order:1}.inspector{order:2;display:block}.inspector-section{padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid var(--line)}.lesson-intro{padding:14px}.lesson-title{font-size:24px}.section-grid{grid-template-columns:1fr}.concept-card.wide{grid-column:auto}.check-panel{grid-template-columns:1fr}.inspector{padding:12px}.control-grid{grid-template-columns:1fr}.bar-row{grid-template-columns:88px 1fr 40px}.metric-grid{grid-template-columns:repeat(3,1fr)}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+
+/* XAI quick guide and code cookbook */
+.xai-guide{margin:0 0 14px;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+.xai-guide h2{font-size:1.12rem;margin:0 0 8px;letter-spacing:-.02em}
+.xai-guide h3{font-size:.96rem;margin:14px 0 6px}
+.xai-guide p,.xai-guide li{font-size:.9rem;line-height:1.6;color:var(--muted)}
+.xai-guide strong{color:var(--text)}
+.xai-guide .guide-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.xai-guide .guide-tile{border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--panel-2,var(--panel))}
+.xai-guide pre{white-space:pre;overflow:auto;padding:12px;border-radius:10px;border:1px solid var(--line);background:#0b1220;color:#e5eefc;font-size:.78rem;line-height:1.5}
+.xai-guide .code-label{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px}
+.xai-guide .code-label span{font-size:.82rem;font-weight:700}
+.xai-guide .note{padding:10px 12px;border-left:3px solid var(--accent);background:var(--surface);border-radius:6px;font-size:.86rem;line-height:1.55}
+@media(max-width:700px){.xai-guide .guide-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body data-theme="dark">
 <header class="topbar">
  <div class="brand"><div class="brand-mark">XAI</div><div><strong>Aznur XAI Learning Lab</strong><small>EXPLAINABLE AI / LEARN BY INVESTIGATING</small></div></div>
- <div class="top-meta"><span class="top-chip">BEGINNER → ADVANCED</span><span class="top-chip" id="lessonCount">30 guided lessons</span><span id="saveState">Saved in this browser</span></div>
+ <div class="top-meta"><span class="top-chip">BEGINNER → ADVANCED</span><span class="top-chip" id="lessonCount">30 guided lessons + code guide</span><span id="saveState">Saved in this browser</span></div>
  <div class="top-actions"><button class="btn small" id="printBtn">Print</button><button class="btn small" id="themeBtn">Light mode</button><button class="btn small mobile-menu" id="mobileMenu">Lessons</button></div>
 </header>
 <div class="layout">
@@ -49,6 +64,122 @@ body[data-theme="light"]{color-scheme:light;--bg:#edf1f6;--panel:#fff;--panel2:#
    <section class="concept-card wide"><div class="card-heading"><span class="card-icon">≡</span>How to reason through it</div><ol class="steps" id="lessonSteps"></ol></section>
    <section class="concept-card wide"><div class="card-heading"><span class="card-icon">!</span>Common beginner trap</div><div class="card-copy" id="lessonPitfall"></div></section>
   </div>
+
+  <section class="xai-guide" aria-label="XAI basics and Python code examples">
+   <h2>Quick guide: Explainable AI (XAI)</h2>
+   <p><strong>Explainable AI</strong> means methods that help people understand how an AI model arrived at a prediction: which input signals mattered, how the prediction changes, and where the explanation might be unreliable. It helps people inspect a model; it does not prove the model is correct, fair, or causal.</p>
+   <div class="guide-grid">
+    <div class="guide-tile"><h3>SHAP in the simplest terms</h3><p>Think of the prediction as a bill split among the input features. SHAP assigns each feature a contribution relative to a baseline prediction. A positive value pushes the selected output above the baseline; a negative value pushes it below, subject to the explainer and output scale.</p><p><strong>Best fit:</strong> comparing feature contributions consistently for individual predictions and summarizing patterns across many cases.</p></div>
+    <div class="guide-tile"><h3>LIME in the simplest terms</h3><p>Imagine a small, simple map drawn around one house. LIME changes parts of one input, asks the complex model for its answers, then fits a simple local model to approximate the behavior nearby.</p><p><strong>Best fit:</strong> a quick, human-readable explanation for one case, especially when you need to inspect a black-box model locally.</p></div>
+   </div>
+   <h3>SHAP vs LIME</h3>
+   <ul>
+    <li><strong>SHAP:</strong> baseline-relative feature contributions using Shapley-value ideas. Useful for local explanations and aggregate feature-importance analysis. Can be computationally expensive; results depend on explainer choice and background data.</li>
+    <li><strong>LIME:</strong> a locally fitted interpretable approximation around one example. Often easier to explain as a short local story, but can change with sampling, neighborhood settings, and random seed.</li>
+    <li><strong>Both:</strong> explain model behavior, not necessarily real-world causes. Test fidelity, stability, and whether the explanation makes sense for the domain.</li>
+   </ul>
+   <h3>What tools are used for XAI?</h3>
+   <ul>
+    <li><strong>Python foundations:</strong> pandas and NumPy for data, scikit-learn for models and inspection.</li>
+    <li><strong>Tabular model explainers:</strong> SHAP, LIME, permutation importance, partial dependence (PDP), individual conditional expectation (ICE), and counterfactual tools such as DiCE.</li>
+    <li><strong>Deep learning:</strong> Captum for PyTorch, Integrated Gradients, gradient/saliency methods, Grad-CAM for vision, and model-specific attribution tools.</li>
+    <li><strong>Text and language models:</strong> token masking, SHAP text explainers, LIME text explainers, attention inspection (not automatically a faithful explanation), and evaluation/sanity checks.</li>
+    <li><strong>Operational practice:</strong> notebooks, experiment tracking, model cards, dashboards, subgroup analysis, stability tests, and human/domain-expert review.</li>
+   </ul>
+   <h3>Application fields and concrete examples</h3>
+   <ul>
+    <li><strong>Healthcare:</strong> inspect whether a risk model relies on clinically meaningful measurements rather than hospital-specific shortcuts. A clinician must validate explanations.</li>
+    <li><strong>Banking and insurance:</strong> examine factors associated with a credit-risk or claim prediction and test whether explanations are consistent and compliant. Attribution alone is not a legally sufficient decision reason.</li>
+    <li><strong>Manufacturing:</strong> investigate whether a defect detector relies on the defect itself or on lighting, camera, or background artifacts.</li>
+    <li><strong>Retail and marketing:</strong> inspect which customer/session features influence a churn or conversion prediction; check subgroups and drift.</li>
+    <li><strong>Cybersecurity:</strong> investigate which traffic features drive an anomaly alert and whether the explanation reflects a real attack pattern or a benign proxy.</li>
+    <li><strong>Computer vision:</strong> use saliency/Grad-CAM to inspect image regions influencing a classifier; test maps rather than trusting attractive heatmaps.</li>
+    <li><strong>NLP and moderation:</strong> inspect words or phrases associated with a sentiment, spam, or moderation output; check masking artifacts and demographic bias.</li>
+    <li><strong>Science and engineering:</strong> audit surrogate models, feature interactions, and model sensitivity in climate, materials, energy, or predictive-maintenance workflows.</li>
+   </ul>
+   <h3>Python code cookbook</h3>
+   <p>These examples are intended for a local Python environment, not executed by this browser app. Install the libraries first with <code>pip install scikit-learn shap lime matplotlib pandas</code>. The code trains a small synthetic model so you can run it without downloading a dataset.</p>
+   <div class="code-label"><span>1. Train a small model (shared setup)</span></div>
+   <pre><code>import numpy as np
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+
+X, y = make_classification(
+    n_samples=500, n_features=5, n_informative=3,
+    n_redundant=1, random_state=7
+)
+feature_names = ["feature_A", "feature_B", "feature_C",
+                 "feature_D", "feature_E"]
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.25, random_state=7, stratify=y
+)
+model = RandomForestClassifier(n_estimators=100, random_state=7)
+model.fit(X_train, y_train)
+
+row = X_test[0:1]
+print("Predicted class:", model.predict(row)[0])
+print("Class probabilities:", model.predict_proba(row)[0])</code></pre>
+   <div class="code-label"><span>2. SHAP: explain one prediction</span></div>
+   <pre><code>import shap
+
+# A small representative background sample establishes the baseline.
+background = X_train[:80]
+explainer = shap.TreeExplainer(model, data=background)
+shap_values = explainer(row)
+
+# Modern SHAP versions commonly return an Explanation object.
+print("Base value:", explainer.expected_value)
+print("Feature contributions:", shap_values.values)
+
+shap.plots.waterfall(shap_values[0], max_display=5)
+# For global patterns, summarize a representative test sample:
+sample = X_test[:100]
+shap_sample = explainer(sample)
+shap.plots.beeswarm(shap_sample)</code></pre>
+   <div class="note">Interpret the SHAP plot relative to its baseline and output scale. SHAP values are not causal effects. For binary classifiers, check the installed SHAP version's output shape and which class/output you are explaining.</div>
+   <div class="code-label"><span>3. LIME: explain one prediction</span></div>
+   <pre><code>from lime.lime_tabular import LimeTabularExplainer
+
+lime_explainer = LimeTabularExplainer(
+    training_data=X_train,
+    feature_names=feature_names,
+    class_names=["class_0", "class_1"],
+    mode="classification",
+    discretize_continuous=True,
+    random_state=7
+)
+
+explanation = lime_explainer.explain_instance(
+    data_row=X_test[0],
+    predict_fn=model.predict_proba,
+    num_features=5,
+    num_samples=3000
+)
+print(explanation.as_list())
+# In a notebook, this renders a local explanation:
+explanation.show_in_notebook(show_table=True)</code></pre>
+   <div class="note">LIME describes a local approximation around this one row. Check its local fidelity and repeat with different random seeds or sample counts to see whether the explanation is stable.</div>
+   <div class="code-label"><span>4. A simple model-independent baseline: permutation importance</span></div>
+   <pre><code>from sklearn.inspection import permutation_importance
+
+result = permutation_importance(
+    model, X_test, y_test,
+    n_repeats=10, random_state=7, scoring="accuracy"
+)
+for i in result.importances_mean.argsort()[::-1]:
+    print(feature_names[i], round(result.importances_mean[i], 3))</code></pre>
+   <h3>Suggested beginner workflow</h3>
+   <ol>
+    <li>Train and evaluate a baseline model before explaining it.</li>
+    <li>Pick the question first: why this case (local), what matters overall (global), or what change could alter the outcome (counterfactual).</li>
+    <li>Start with permutation importance or PDP for a broad view, then use SHAP or LIME for individual cases.</li>
+    <li>Check representative examples, edge cases, subgroups, stability, and model performance.</li>
+    <li>Write down the model version, data sample, explainer settings, output/class explained, limitations, and intended audience.</li>
+   </ol>
+   <p class="note"><strong>Important:</strong> This cookbook is real Python-library usage, but the interactive labs elsewhere in this HTML remain illustrative teaching demos using synthetic formulas. They do not run the SHAP or LIME libraries inside the browser.</p>
+  </section>
+
   <section class="workspace" aria-label="Interactive XAI laboratory">
    <div class="workspace-head"><div><div class="workspace-title" id="labTitle">Interactive XAI lab</div><div class="workspace-subtitle" id="labSubtitle">Change inputs and observe how explanations respond.</div></div><span class="file-pill" id="labType">MODEL SANDBOX</span></div>
    <div class="lab-body" id="labBody"></div>
